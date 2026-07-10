@@ -58,3 +58,13 @@ export interface BrandCreationAttributes
 
 export interface ProductCreationAttributes
   extends Omit<ProductAttributes, "id"> {}
+
+  export interface PasswordResetAttributes {
+  id?: ID;
+  userId: ID;
+  code: string;
+  expiresAt: Date;
+  isVerified: boolean;
+}
+
+export interface PasswordCreationResetAttributes extends Omit<PasswordResetAttributes, "id" | "isVerified"> { }

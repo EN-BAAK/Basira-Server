@@ -4,7 +4,7 @@
   "description": "Server side for basira project",
   "main": "basiraServer.js",
   "scripts": {
-    "dev": "nodemon basira.ts",
+    "dev": "nodemon basiraServer.ts",
     "dev:ts": "ts-node basiraServer.ts",
     "build": "tsc",
     "start": "node dist/basiraServer.js",

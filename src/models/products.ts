@@ -27,7 +27,7 @@ export class Product extends Model<ProductAttributes, ProductCreationAttributes>
 
   static associate(models: any) {
     Product.belongsToMany(models.Color, {
-      through: "product_colors",
+      through: models.ProductColor,
       foreignKey: "productId",
       otherKey: "colorId",
       as: "colors",
@@ -35,7 +35,7 @@ export class Product extends Model<ProductAttributes, ProductCreationAttributes>
     });
 
     Product.belongsToMany(models.Size, {
-      through: "product_sizes",
+      through: models.ProductSize,
       foreignKey: "productId",
       otherKey: "sizeId",
       as: "sizes",
@@ -97,6 +97,14 @@ export default (sequelize: Sequelize) => {
       sequelize,
       tableName: "products",
       timestamps: false,
+      indexes: [
+        {
+          fields: ["categoryId"],
+        },
+        {
+          fields: ["brandId"]
+        }
+      ],
       hooks: {
         beforeDestroy: async (product: Product) => {
           if (product.imgUrl) {

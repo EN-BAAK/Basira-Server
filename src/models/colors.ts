@@ -12,7 +12,7 @@ export class Color extends Model<ColorAttributes, ColorCreationAttributes> imple
 
   static associate(models: any) {
     Color.belongsToMany(models.Product, {
-      through: "product_colors",
+      through: models.ProductColor,
       foreignKey: "colorId",
       otherKey: "productId",
       as: "products",

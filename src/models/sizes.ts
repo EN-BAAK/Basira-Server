@@ -12,7 +12,7 @@ export class Size extends Model<SizeAttributes, SizeCreationAttributes> implemen
 
   static associate(models: any) {
     Size.belongsToMany(models.Product, {
-      through: "product_sizes",
+      through: models.ProductSize,
       foreignKey: "sizeId",
       otherKey: "productId",
       as: "products",

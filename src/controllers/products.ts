@@ -1,31 +1,8 @@
 import { Request, Response } from "express";
 import { catchAsyncErrors } from "../middlewares/error";
 import { sendSuccessResponse } from "../middlewares/success";
-import { getAllProducts, getAllProductsSettings, createProduct, updateProduct, deleteProductById, getProductById, getProductByIdSettings, } from "../services/products";
+import {  getAllProductsSettings, createProduct, updateProduct, deleteProductById, getProductByIdSettings, } from "../services/products";
 import { ID } from "../types/variables";
-
-export const getAll = catchAsyncErrors(async (req: Request, res: Response) => {
-  const page = parseInt(req.query.p as string) || 1;
-  const limit = parseInt(req.query.l as string) || 10;
-  const search = req.query.s as string;
-  const categoryId = req.query.categoryId as ID | undefined;
-  const brandId = req.query.brandId as ID | undefined;
-
-  const data = await getAllProducts(page, limit, search, categoryId, brandId);
-  const total = data.count;
-  const totalPages = Math.ceil(total / limit);
-
-  sendSuccessResponse(res, 200, "Products fetched", {
-    items: data.rows,
-    page,
-    limit,
-    total,
-    totalPages,
-    hasMore: page < totalPages,
-    nextPage: page < totalPages ? page + 1 : null,
-    prevPage: page > 1 ? page - 1 : null,
-  });
-});
 
 export const getAllSettings = catchAsyncErrors(async (req: Request, res: Response) => {
   const page = parseInt(req.query.p as string) || 1;
@@ -47,12 +24,6 @@ export const getAllSettings = catchAsyncErrors(async (req: Request, res: Respons
     nextPage: page < totalPages ? page + 1 : null,
     prevPage: page > 1 ? page - 1 : null,
   });
-});
-
-export const getById = catchAsyncErrors(async (req: Request, res: Response) => {
-  const id = req.params.id as ID;
-  const product = await getProductById(id);
-  sendSuccessResponse(res, 200, "Product fetched", product);
 });
 
 export const getByIdSettings = catchAsyncErrors(async (req: Request, res: Response) => {

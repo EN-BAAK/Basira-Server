@@ -12,52 +12,24 @@ import { ProductRelationsInput } from "../types/transactions";
 import { handleProductRelations } from "../strategies/products";
 import fs from "fs";
 
-const findProductById = async (id: ID, properties: boolean = false) => {
-  const product = await Product.findByPk(id, {
-    include: properties ? [
-      { model: Category, as: "category", attributes: ["name"] },
-      { model: Brand, as: "brand", attributes: ["name", "imgUrl"] },
-      { model: Color, as: "colors", attributes: ["name"] },
-      { model: Size, as: "sizes", attributes: ["name"] },
-    ] : [],
-  });
-
-  if (!product) {
-    throw new ErrorHandler("Product not found", 404);
-  }
-  return product;
-};
-
-const findProductByIdSettings = async (id: ID) => {
-  const product = await Product.findByPk(id, {
-    include: [
+const findProductByIdSettings = async (id: ID, relation: boolean = true) => {
+  const includes = relation ?
+    [
       { model: Category, as: "category", attributes: ["name", "id"] },
       { model: Brand, as: "brand", attributes: ["name", "id", "imgUrl"] },
       { model: Color, as: "colors", attributes: ["name", "id"] },
       { model: Size, as: "sizes", attributes: ["name", "id"] },
-    ],
+    ] :
+    undefined
+
+  const product = await Product.findByPk(id, {
+    include: includes,
   });
 
   if (!product) {
     throw new ErrorHandler("Product not found", 404);
   }
   return mapProductSettings(product);
-};
-
-const mapProduct = (product: any) => {
-  const json = product.toJSON();
-  return {
-    id: json.id,
-    title: json.title,
-    description: json.description,
-    imgUrl: json.imgUrl,
-    summarize: json.summarize,
-    price: json.price,
-    category: json.category?.name || null,
-    brand: json.brand ? { name: json.brand.name, imgUrl: json.brand.imgUrl } : null,
-    colors: json.colors?.map((c: any) => c.name) || [],
-    sizes: json.sizes?.map((s: any) => s.name) || [],
-  };
 };
 
 const mapProductSettings = (product: any) => {
@@ -70,41 +42,6 @@ const mapProductSettings = (product: any) => {
     brand: json.brand ? { id: json.brand.id, name: json.brand.name, imgUrl: json.brand.imgUrl } : null,
     colors: json.colors?.map((c: any) => ({ id: c.id, name: c.name })) || [],
     sizes: json.sizes?.map((s: any) => ({ id: s.id, name: s.name })) || [],
-  };
-};
-
-export const getAllProducts = async (
-  page: number,
-  limit: number,
-  search?: string,
-  categoryId?: ID,
-  brandId?: ID
-) => {
-  const offset = (page - 1) * limit;
-  const where: any = {};
-
-  if (search) {
-    where.title = { [Op.like]: `%${search}%` };
-  }
-  if (categoryId) where.categoryId = categoryId;
-  if (brandId) where.brandId = brandId;
-
-  const { count, rows } = await Product.findAndCountAll({
-    where,
-    limit,
-    offset,
-    order: [["id", "DESC"]],
-    include: [
-      { model: Brand, as: "brand", attributes: ["name", "imgUrl"] },
-      { model: Category, as: "category", attributes: ["name"] },
-      { model: Color, as: "colors", attributes: ["name"] },
-      { model: Size, as: "sizes", attributes: ["name"] },
-    ],
-  });
-
-  return {
-    count,
-    rows: rows.map((p) => mapProduct(p)),
   };
 };
 
@@ -135,11 +72,6 @@ export const getAllProductsSettings = async (
   });
 
   return { rows: rows.map(p => mapProductSettings(p)), count };
-};
-
-export const getProductById = async (id: ID) => {
-  const product = await findProductById(id, true);
-  return mapProduct(product);
 };
 
 export const getProductByIdSettings = async (id: ID) => {
@@ -183,7 +115,7 @@ export const updateProduct = async (
   const t = await db.sequelize.transaction();
 
   try {
-    const product = await findProductById(id);
+    const product = await findProductByIdSettings(id, false);
 
     if (image) {
       if (product.imgUrl && fs.existsSync(product.imgUrl)) {
@@ -216,7 +148,7 @@ export const updateProduct = async (
 };
 
 export const deleteProductById = async (id: ID) => {
-  const product = await findProductById(id);
+  const product = await findProductByIdSettings(id, false);
   await product.destroy();
   return product;
 };
