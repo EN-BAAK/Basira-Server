@@ -29,7 +29,7 @@ const findProductByIdSettings = async (id: ID, relation: boolean = true) => {
   if (!product) {
     throw new ErrorHandler("Product not found", 404);
   }
-  return mapProductSettings(product);
+  return product;
 };
 
 const mapProductSettings = (product: any) => {
@@ -75,7 +75,8 @@ export const getAllProductsSettings = async (
 };
 
 export const getProductByIdSettings = async (id: ID) => {
-  return findProductByIdSettings(id);
+  const product = await findProductByIdSettings(id);
+  return mapProductSettings(product);
 };
 
 export const createProduct = async (
@@ -98,7 +99,8 @@ export const createProduct = async (
     }
 
     await t.commit();
-    return product.toJSON();
+    const createdProduct = await findProductByIdSettings(product.id)
+    return mapProductSettings(createdProduct);
   } catch (err) {
     await t.rollback();
     throw err;
@@ -140,7 +142,8 @@ export const updateProduct = async (
     }
 
     await t.commit();
-    return product.toJSON();
+    const updatedProduct = await findProductByIdSettings(product.id)
+    return mapProductSettings(updatedProduct);
   } catch (err) {
     await t.rollback();
     throw err;

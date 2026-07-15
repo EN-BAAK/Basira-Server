@@ -14,6 +14,7 @@ import ProductsRouter from "./src/routers/products";
 import CategoriesRouter from "./src/routers/categories";
 import BrandsRouter from "./src/routers/brands";
 import UsersRouter from "./src/routers/users";
+import ProductVariantsRouter from "./src/routers/productVariants";
 
 const port = process.env.PORT || 5000;
 
@@ -62,6 +63,7 @@ app.use("/api/v0/colors", ColorsRouter);
 app.use("/api/v0/products", ProductsRouter);
 app.use("/api/v0/brands", BrandsRouter);
 app.use("/api/v0/categories", CategoriesRouter);
+app.use("/api/v0/variants", ProductVariantsRouter);
 
 // Next.js handler
 // app.all(/.*/, (req, res) => {

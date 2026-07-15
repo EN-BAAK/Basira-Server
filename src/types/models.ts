@@ -68,3 +68,14 @@ export interface ProductCreationAttributes
 }
 
 export interface PasswordCreationResetAttributes extends Omit<PasswordResetAttributes, "id" | "isVerified"> { }
+
+export interface ProductVariantAttributes {
+  id: ID;
+  productId: ID;
+  colorId?: ID | null;
+  sizeId?: ID | null;
+  quantity: number;
+}
+
+export interface ProductVariantCreationAttributes
+  extends Omit<ProductVariantAttributes, "id"> {}
