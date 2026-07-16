@@ -19,3 +19,8 @@ export interface IConfig {
   host: string;
   dialect: Dialect;
 }
+
+export enum MessageRole {
+  USER = "user",
+  ASSISTANT = "assistant",
+}

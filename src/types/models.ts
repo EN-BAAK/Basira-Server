@@ -1,4 +1,4 @@
-import { ID } from "./variables";
+import { ID, MessageRole } from "./variables";
 
 export interface CategoryAttributes {
   id: ID;
@@ -8,9 +8,9 @@ export interface CategoryAttributes {
 }
 
 export interface CategoryCreationAttributes
-  extends Omit<CategoryAttributes, "id"> {}
+  extends Omit<CategoryAttributes, "id"> { }
 
-  export interface UserAttributes {
+export interface UserAttributes {
   id: ID;
   name: string;
   email: string;
@@ -36,7 +36,7 @@ export interface SizeAttributes {
 export interface SizeCreationAttributes
   extends Omit<SizeAttributes, "id"> { }
 
-  export interface BrandAttributes {
+export interface BrandAttributes {
   id: ID;
   name: string;
   imgUrl?: string | null;
@@ -45,7 +45,7 @@ export interface SizeCreationAttributes
 export interface BrandCreationAttributes
   extends Omit<BrandAttributes, "id"> { }
 
-  export interface ProductAttributes {
+export interface ProductAttributes {
   id: ID;
   title: string;
   categoryId: ID;
@@ -57,9 +57,9 @@ export interface BrandCreationAttributes
 }
 
 export interface ProductCreationAttributes
-  extends Omit<ProductAttributes, "id"> {}
+  extends Omit<ProductAttributes, "id"> { }
 
-  export interface PasswordResetAttributes {
+export interface PasswordResetAttributes {
   id?: ID;
   userId: ID;
   code: string;
@@ -78,4 +78,25 @@ export interface ProductVariantAttributes {
 }
 
 export interface ProductVariantCreationAttributes
-  extends Omit<ProductVariantAttributes, "id"> {}
+  extends Omit<ProductVariantAttributes, "id"> { }
+
+export interface ChatRoomAttributes {
+  id: ID;
+  userId: ID;
+  title: string;
+  createdAt: Date;
+}
+
+export interface ChatRoomCreationAttributes
+  extends Omit<ChatRoomAttributes, "id" | "createdAt"> { }
+
+export interface MessageAttributes {
+  id: ID;
+  chatRoomId: ID;
+  role: MessageRole;
+  content: string;
+  createdAt: Date;
+}
+
+export interface MessageCreationAttributes
+  extends Omit<MessageAttributes, "id" | "createdAt"> { }
