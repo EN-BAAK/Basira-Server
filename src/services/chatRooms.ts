@@ -19,8 +19,8 @@ export const getRoomsByUserId = async (userId: ID) => {
   return rooms.map((r) => r.toJSON());
 };
 
-export const createRoom = async (data: ChatRoomCreationAttributes) => {
-  const room = await ChatRoom.create(data);
+export const createRoom = async (data: ChatRoomCreationAttributes, transaction?: any) => {
+  const room = await ChatRoom.create(data, {transaction});
   return room.toJSON();
 };
 

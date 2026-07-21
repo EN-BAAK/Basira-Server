@@ -15,6 +15,8 @@ import CategoriesRouter from "./src/routers/categories";
 import BrandsRouter from "./src/routers/brands";
 import UsersRouter from "./src/routers/users";
 import ProductVariantsRouter from "./src/routers/productVariants";
+import ChatRoomsRouter from "./src/routers/chatRooms";
+import MessagesRouter from "./src/routers/messages";
 
 const port = process.env.PORT || 5000;
 
@@ -64,6 +66,8 @@ app.use("/api/v0/products", ProductsRouter);
 app.use("/api/v0/brands", BrandsRouter);
 app.use("/api/v0/categories", CategoriesRouter);
 app.use("/api/v0/variants", ProductVariantsRouter);
+app.use("/api/v0/rooms", ChatRoomsRouter);
+app.use("/api/v0/messages", MessagesRouter);
 
 // Next.js handler
 // app.all(/.*/, (req, res) => {

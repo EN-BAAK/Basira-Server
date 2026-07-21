@@ -9,7 +9,8 @@ export class ChatRoom extends Model<ChatRoomAttributes, ChatRoomCreationAttribut
   public createdAt!: Date;
 
   public toJSON(): object {
-    return { ...this.get() };
+    const data = this.get()
+    return { ...data, userId: undefined };
   }
 
   static associate(models: any) {

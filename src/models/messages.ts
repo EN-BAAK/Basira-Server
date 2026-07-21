@@ -10,7 +10,8 @@ export class Message extends Model<MessageAttributes, MessageCreationAttributes>
   public createdAt!: Date;
 
   public toJSON(): object {
-    return { ...this.get() };
+    const data = this.get()
+    return { ...data, chatRoomId: undefined };
   }
 
   static associate(models: any) {
