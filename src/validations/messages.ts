@@ -4,6 +4,6 @@ export const chatRoomIdParam = [
   param("chatRoomId").isInt().withMessage("Chat room ID must be an integer"),
 ];
 
-export const sendMessageValidation = [
+export const messageValidation = [
   body("content").notEmpty().withMessage("Message content cannot be empty"),
 ];

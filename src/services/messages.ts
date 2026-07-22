@@ -40,19 +40,36 @@ export const sendMessage = async (chatRoomId: ID, content: string, userId: ID) =
       { transaction: t }
     );
 
+    await t.commit();
+
+    return {
+      message: userMessage.toJSON(),
+      roomId: currentChatRoomId,
+      createdRoom: createdRoom
+    };
+    
+  } catch (err) {
+    await t.rollback();
+    throw err;
+  }
+};
+
+export const sendResponse = async (chatRoomId: ID, content: string) => {
+  if (!db || !db.sequelize) return;
+  const t = await db.sequelize.transaction();
+  try {
     const aiResponseText = await mockAiServerCall(content);
 
     const aiMessage = await Message.create(
-      { chatRoomId: currentChatRoomId, role: MessageRole.ASSISTANT, content: aiResponseText },
+      { chatRoomId, role: MessageRole.ASSISTANT, content: aiResponseText },
       { transaction: t }
     );
 
     await t.commit();
 
     return {
-      messages: [userMessage.toJSON(), aiMessage.toJSON(),],
-      roomId: currentChatRoomId,
-      createdRoom: createdRoom
+      message: aiMessage.toJSON(),
+      roomId: chatRoomId,
     };
   } catch (err) {
     await t.rollback();
