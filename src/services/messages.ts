@@ -2,15 +2,21 @@ import { Message } from "../models/messages";
 import { ID, MessageRole } from "../types/variables";
 import db from "../models";
 import { createRoom } from "../services/chatRooms";
+import axios from "axios";
 
-const mockAiServerCall = async (userPrompt: string): Promise<string> => {
-  `${userPrompt}`
+const AI_SERVER_URL = `${process.env.AI_SERVER_URL}/api/v1/chat`
 
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve("responded from ai");
-    }, 500);
-  });
+const callAiServer = async (userPrompt: string): Promise<string> => {
+  try {
+    const response = await axios.post(AI_SERVER_URL, {
+      question: userPrompt
+    });
+
+    return response.data?.final_answer || "لم يتم الحصول على إجابة من المحلل المالي.";
+  } catch (error: any) {
+    console.error("Error communicating with AI Server:", error.response?.data || error.message);
+    throw new Error("فشل الاتصال بمحرك الذكاء الاصطناعي");
+  }
 };
 
 export const getMessagesByRoomId = async (chatRoomId: ID) => {
@@ -29,7 +35,7 @@ export const sendMessage = async (chatRoomId: ID, content: string, userId: ID) =
   try {
     let currentChatRoomId = chatRoomId as ID
     let createdRoom = undefined
-  
+
     if (currentChatRoomId == "-1") {
       createdRoom = await createRoom({ title: "محادثة جديدة", userId }, t) as any
       currentChatRoomId = createdRoom.id
@@ -47,7 +53,7 @@ export const sendMessage = async (chatRoomId: ID, content: string, userId: ID) =
       roomId: currentChatRoomId,
       createdRoom: createdRoom
     };
-    
+
   } catch (err) {
     await t.rollback();
     throw err;
@@ -58,7 +64,7 @@ export const sendResponse = async (chatRoomId: ID, content: string) => {
   if (!db || !db.sequelize) return;
   const t = await db.sequelize.transaction();
   try {
-    const aiResponseText = await mockAiServerCall(content);
+    const aiResponseText = await callAiServer(content);
 
     const aiMessage = await Message.create(
       { chatRoomId, role: MessageRole.ASSISTANT, content: aiResponseText },
