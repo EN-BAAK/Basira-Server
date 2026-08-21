@@ -31,6 +31,12 @@ export class ProductVariant extends Model<ProductVariantAttributes, ProductVaria
       as: "size",
       onDelete: "SET NULL",
     });
+
+    ProductVariant.hasMany(models.Sale, {
+      foreignKey: "productVariantId",
+      as: "sales",
+      onDelete: "RESTRICT",
+    });
   }
 }
 

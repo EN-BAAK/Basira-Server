@@ -100,3 +100,12 @@ export interface MessageAttributes {
 
 export interface MessageCreationAttributes
   extends Omit<MessageAttributes, "id" | "createdAt"> { }
+
+  export interface SaleAttributes {
+  id: ID;
+  totalPrice: number;
+  productVariantId: ID;
+  quantity: number;
+}
+
+export type SaleCreationAttributes = Omit<SaleAttributes,"id">;
